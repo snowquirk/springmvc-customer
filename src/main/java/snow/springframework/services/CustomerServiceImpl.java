@@ -4,10 +4,7 @@ import org.springframework.stereotype.Service;
 import snow.springframework.domain.Customer;
 import snow.springframework.domain.Product;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CustomerServiceImpl implements CustomerService{
@@ -21,6 +18,34 @@ public class CustomerServiceImpl implements CustomerService{
     @Override
     public List<Customer> listAllCustomer() {
         return new ArrayList<>(customers.values());
+    }
+
+    @Override
+    public Customer getCustomerById(Integer id) {
+        return customers.get(id);
+
+    }
+
+    @Override
+    public Customer saveOrUpdateCustomer(Customer customer) {
+        if(customers != null){
+            if(customer.getId() == null){
+                customer.setId(getNextKey());
+            }
+            customers.put(customer.getId(), customer);
+            return customer;
+        } else {
+            throw new RuntimeException("Customer can't be null");
+        }
+    }
+
+    private Integer getNextKey() {
+        return Collections.max(customers.keySet()) + 1;
+    }
+
+    @Override
+    public void deleteCustomer(Integer id) {
+        customers.remove(id);
     }
 
     private void loadCustomers() {
